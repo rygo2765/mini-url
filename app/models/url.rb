@@ -14,9 +14,14 @@ class Url < ApplicationRecord
 
   # Method to generate a short URL
   def generate_short_url
-    # Generate a random short code based on Unique Id Length
-    short_url_path = SecureRandom.base58(UNIQUE_ID_LENGTH)
-    self.short_url = "https://miniurl.com/#{short_url_path}"
+    loop do
+      # Generate a random unique short code based on Unique Id Length
+      short_url_path = SecureRandom.base58(UNIQUE_ID_LENGTH)
+      self.short_url = "https://miniurl.com/#{short_url_path}"
+      if !Url.exists?(short_url: self.short_url)
+        break
+      end
+    end
   end
 
   # Method to fetch title form the target URL
