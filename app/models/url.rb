@@ -5,6 +5,8 @@ class Url < ApplicationRecord
   # Unique ID Length determines the number of characters in the Short URL path
   UNIQUE_ID_LENGTH = 8
 
+  before_validation :sanitize_target_url
+
   # Validation to ensure the target URL is in the correct format
   validates :target_url, presence: true, format: { with: URI.regexp(%w[http https]), message: "must be a valid URL" }
 
@@ -37,4 +39,19 @@ class Url < ApplicationRecord
       self.title = "Unknown Title"
     end
   end
+
+  # Method to sanitize target_url before validation
+  def sanitize_target_url
+    return if target_url.blank?
+
+    # Remove all whitespace
+    sanitized = target_url.gsub(/\s+/, '')
+
+    # Ensure the URL starts with http:// or https://
+    sanitized = "http://#{sanitized}" unless sanitized.start_with?('http://', 'https://')
+
+    self.target_url = sanitized
+
+    puts(target_url)
+  end 
 end
