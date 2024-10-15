@@ -44,14 +44,18 @@ class Url < ApplicationRecord
   def sanitize_target_url
     return if target_url.blank?
 
-    # Remove all whitespace
-    sanitized = target_url.gsub(/\s+/, '')
-
-    # Ensure the URL starts with http:// or https://
-    sanitized = "http://#{sanitized}" unless sanitized.start_with?('http://', 'https://')
-
-    self.target_url = sanitized
-
-    puts(target_url)
-  end 
+    begin
+      # Parse the URL to ensure it's a valid URI object
+      uri = URI.parse(target_url.strip)
+      # Check if URL have a scheme (http or https), add http by default
+      if uri.scheme
+        uri = URI.parse("http://#{target_url.strip}")
+      end
+      # Reconstruct the URL as a string to ensure it's properly formatted
+      self.target_url = uri.to_s
+    rescue URI::InvalidURIError
+      # IF parsing fails, set target_url to nil so validation will fail
+      self.target_url = nil
+    end
+  end
 end
