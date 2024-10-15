@@ -45,14 +45,25 @@ class Url < ApplicationRecord
     return if target_url.blank?
 
     begin
-      # Parse the URL to ensure it's a valid URI object
-      uri = URI.parse(target_url.strip)
-      # Check if URL have a scheme (http or https), add http by default
-      if uri.scheme
-        uri = URI.parse("http://#{target_url.strip}")
+      # Remove leading or trailing whitespaces from URL
+      stripped_url = target_url.strip
+
+      # Parse URL to ensure its a valid URI object
+      uri = URI.parse(stripped_url)
+
+      # Check if URL has a http or https scheme; if not, add "http://" by default
+      unless uri.scheme
+        uri = URI.parse("http://#{stripped_url}")
       end
-      # Reconstruct the URL as a string to ensure it's properly formatted
-      self.target_url = uri.to_s
+
+      # Check if URI object is a valid HTTP/ HTTPS and if the hostname is valid
+      if (uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)) && uri.host.include?(".")
+        # Reconstruct URL as a string
+        self.target_url = uri.to_s
+      else
+        # set to nil so validation fails
+        self.target_url = nil
+      end
     rescue URI::InvalidURIError
       # IF parsing fails, set target_url to nil so validation will fail
       self.target_url = nil
