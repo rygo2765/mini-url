@@ -57,3 +57,17 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "nokogiri"
+
+gem "sanitize"
+
+group :development, :test do
+  gem "rspec-rails", "~> 7.0.0"
+end
+
+gem "webmock", group: :test
+
+gem "dotenv-rails", groups: [ :development, :test ]
+
+gem "rails-controller-testing", group: [ :development, :test ]
