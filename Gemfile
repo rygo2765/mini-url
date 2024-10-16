@@ -67,3 +67,5 @@ group :development, :test do
 end
 
 gem "webmock", group: :test
+
+gem "dotenv-rails", groups: [ :development, :test ]

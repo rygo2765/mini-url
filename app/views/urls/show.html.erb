@@ -6,8 +6,9 @@
 
     <h2 class="font-bold text-3xl">Shortened URL Details</h2>
     <p><strong>Original URL:</strong> <%= @url.target_url %></p>
-    <p><strong>Shortened URL:</strong> <%= link_to @url.short_url, @url.short_url, target: "_blank", class: "text-blue-500 underline" %></p>
+    <p><strong>Shortened URL:</strong> <%= link_to @full_short_url, @full_short_url, target: "_blank", class: "text-blue-500 underline" %></p>
     <p><strong>Title:</strong> <%= @url.title %></p>
+
 
     <%= link_to "Shorten another URL", new_url_path, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
     <%= link_to "Back to URLs", urls_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>

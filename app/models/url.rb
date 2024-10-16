@@ -19,7 +19,7 @@ class Url < ApplicationRecord
     loop do
       # Generate a random unique short code based on Unique Id Length
       short_url_path = SecureRandom.base58(UNIQUE_ID_LENGTH)
-      self.short_url = "https://miniurl.com/#{short_url_path}"
+      self.short_url = short_url_path
       if !Url.exists?(short_url: self.short_url)
         break
       end
