@@ -37,8 +37,14 @@ RSpec.describe Url, type: :model do
   describe '#generate_short_url' do
     let(:url) { Url.create(target_url: valid_url) }
 
-    it 'generates a unique short URL' do
-      expect(url.short_url).to start_with('https://miniurl.com')
+    it 'generates unique short URL paths' do
+      generated_urls = []
+      100.times do
+        url = Url.create(target_url: "https://example.com")
+        generated_urls << url.short_url
+      end
+
+      expect(generated_urls.uniq.length).to eq(generated_urls.length)
     end
 
     it 'generates a short URL path not exceeding 15 characters' do

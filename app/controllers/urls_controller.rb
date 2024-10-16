@@ -24,7 +24,7 @@ class UrlsController < ApplicationController
     if url
       redirect_to url.target_url, allow_other_host: true
     else
-      render file: "#{Rails.root}/public/404.html", layout: false, status: not_found
+      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end
   end
 
