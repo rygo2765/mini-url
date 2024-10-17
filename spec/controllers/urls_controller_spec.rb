@@ -96,7 +96,7 @@ RSpec.describe UrlsController, type: :controller do
   describe "GET #show_visits" do
     context "with a valid short URL" do
       it "assigns the requested url and its visits" do
-        visit = url.visits.create(city: "Sample City", region: "Sample Region", country: "Sample Country") # 
+        visit = url.visits.create(city: "Sample City", region: "Sample Region", country: "Sample Country") #
         get :show_visits, params: { short_url: url.short_url }
 
         expect(assigns(:url)).to eq(url)

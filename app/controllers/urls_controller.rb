@@ -3,7 +3,8 @@ class UrlsController < ApplicationController
 
   # GET /urls or /urls.json
   def index
-    @urls = Url.all
+    user_uuid = cookies[:user_uuid]
+    @urls = Url.where(user_uuid: user_uuid)
   end
 
   # GET /urls/1 or /urls/1.json
@@ -51,7 +52,8 @@ class UrlsController < ApplicationController
 
   # POST /urls or /urls.json
   def create
-    @url = Url.new(url_params)
+    user_uuid = cookies[:user_uuid] || generate_user_uuid
+    @url = Url.new(url_params.merge(user_uuid: user_uuid))
 
     respond_to do |format|
       if @url.save
@@ -87,6 +89,16 @@ class UrlsController < ApplicationController
   end
 
   private
+
+    def generate_user_uuid
+      uuid = SecureRandom.uuid
+      cookies[:user_uuid]={
+        value: uuid,
+        expires: 1.year.from_now,
+        httponly: true
+      }
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_url
       @url = Url.find(params[:id])
