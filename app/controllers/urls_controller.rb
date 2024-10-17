@@ -22,9 +22,15 @@ class UrlsController < ApplicationController
     url = Url.find_by(short_url: short_url_param)
 
     if url
-      url.visits.create(ip_address: request.remote_ip)
+      visit = url.visits.new(ip_address: request.remote_ip)
 
-      redirect_to url.target_url, allow_other_host: true
+      if visit.save
+        redirect_to url.target_url, allow_other_host: true
+      else
+        Rails.logger.error "Failed to save visit: #{visit.errors.full_messages.join(", ")}"
+        redirect_to url.target_url, allow_other_host: true
+      end
+
     else
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end

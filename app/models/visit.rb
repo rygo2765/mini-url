@@ -8,7 +8,6 @@ class Visit < ApplicationRecord
   private
   def geocode_ip_address
     return unless ip_address.present?
-
     begin
       location_data = Geocoder.search(ip_address).first
       self.city = location_data.city || "Unknown"
