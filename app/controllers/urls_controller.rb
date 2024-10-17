@@ -22,7 +22,22 @@ class UrlsController < ApplicationController
     url = Url.find_by(short_url: short_url_param)
 
     if url
+      url.visits.create(ip_address: request.remote_ip)
+
       redirect_to url.target_url, allow_other_host: true
+    else
+      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
+    end
+  end
+
+  def show_visits
+    short_url_param = params[:short_url]
+    @url = Url.find_by(short_url: short_url_param)
+
+    if @url
+      @visits = @url.visits
+      @full_short_url = full_short_url(@url.short_url)
+      render "show_visits"
     else
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end

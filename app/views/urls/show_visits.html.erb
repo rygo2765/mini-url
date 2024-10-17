@@ -1,0 +1,44 @@
+<h1 class="text-2xl font-bold mb-4">Visit Dashboard for <%= @url.short_url %></h1>
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  <h2 class="text-xl font-semibold mb-2">URL Information</h2>
+  <p><strong>Short URL:</strong> <%= link_to @full_short_url, @full_short_url, target: "_blank" %></p>
+  <p><strong>Target URL:</strong> <%= link_to @url.target_url, @url.target_url, target: "_blank" %></p>
+  <p><strong>Title:</strong> <%= @url.title %></p>
+</div>
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  <h2 class="text-xl font-semibold mb-2">Visit Statistics</h2>
+  <p><strong>Total Visits:</strong> <%= @visits.count %></p>
+  
+  <h3 class="text-lg font-semibold mt-4 mb-2">Top 5 Countries</h3>
+  <ul class="list-disc pl-5">
+    <% @visits.group(:country).order('count_id DESC').limit(5).count(:id).each do |country, count| %>
+      <li><%= "#{country}: #{count}" %></li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  <h2 class="text-xl font-semibold mb-2">Recent Visits</h2>
+  <table class="min-w-full">
+    <thead>
+      <tr>
+        <th class="px-4 py-2">Date</th>
+        <th class="px-4 py-2">City</th>
+        <th class="px-4 py-2">Region</th>
+        <th class="px-4 py-2">Country</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @visits.order(created_at: :desc).limit(10).each do |visit| %>
+        <tr>
+          <td class="border px-4 py-2"><%= visit.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td class="border px-4 py-2"><%= visit.city %></td>
+          <td class="border px-4 py-2"><%= visit.region %></td>
+          <td class="border px-4 py-2"><%= visit.country %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
