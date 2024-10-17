@@ -2,6 +2,7 @@ require "nokogiri"
 require "open-uri"
 
 class Url < ApplicationRecord
+  has_many :visits, dependent: :destroy
   # Unique ID Length determines the number of characters in the Short URL path
   UNIQUE_ID_LENGTH = 8
 
