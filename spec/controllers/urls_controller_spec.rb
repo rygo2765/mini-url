@@ -66,14 +66,47 @@ RSpec.describe UrlsController, type: :controller do
   describe "GET #redirect_to_target" do
     context "with a valid short URL" do
       it "redirects to the target URL" do
-        get :redirect_to_target, params: { short_url: url.short_url }
+        allow_any_instance_of(ActionDispatch::Request).to receive(:remote_ip).and_return('203.0.113.195')
+
+        allow(Geocoder).to receive(:search).and_return([
+          OpenStruct.new(city: 'Sample City', region: 'Sample Region', country: 'Sample Country')
+        ])
+        expect {
+          get :redirect_to_target, params: { short_url: url.short_url }
+        }.to change(Visit, :count).by(1)
+
         expect(response).to redirect_to(valid_url)
+        visit = Visit.last
+        expect(visit.city).to eq('Sample City')
+        expect(visit.region).to eq('Sample Region')
+        expect(visit.country).to eq('Sample Country')
+        expect(visit.created_at).to be_present
       end
     end
 
     context "with an invalid short URL" do
       it "renders a 404 page" do
         get :redirect_to_target, params: { short_url: "nonexistent" }
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to include("The page you were looking for doesn't exist")
+      end
+    end
+  end
+
+  describe "GET #show_visits" do
+    context "with a valid short URL" do
+      it "assigns the requested url and its visits" do
+        visit = url.visits.create(city: "Sample City", region: "Sample Region", country: "Sample Country") #
+        get :show_visits, params: { short_url: url.short_url }
+
+        expect(assigns(:url)).to eq(url)
+        expect(assigns(:visits)).to include(visit)
+      end
+    end
+
+    context "with an invalid short URL" do
+      it "renders a 404 page" do
+        get :show_visits, params: { short_url: "nonexistent" }
         expect(response).to have_http_status(:not_found)
         expect(response.body).to include("The page you were looking for doesn't exist")
       end

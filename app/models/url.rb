@@ -2,13 +2,15 @@ require "nokogiri"
 require "open-uri"
 
 class Url < ApplicationRecord
+  has_many :visits, dependent: :destroy
   # Unique ID Length determines the number of characters in the Short URL path
   UNIQUE_ID_LENGTH = 8
 
   before_validation :sanitize_target_url
 
-  # Validation to ensure the target URL is in the correct format
+  # Validation to ensure the target URL is in the correct format, user uuid is present
   validates :target_url, presence: true, format: { with: URI.regexp(%w[http https]), message: "must be a valid URL" }
+  validates :user_uuid, presence: true
 
   before_create :generate_short_url, :fetch_title_from_target_url
 

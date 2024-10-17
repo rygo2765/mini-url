@@ -3,7 +3,8 @@ class UrlsController < ApplicationController
 
   # GET /urls or /urls.json
   def index
-    @urls = Url.all
+    user_uuid = cookies[:user_uuid]
+    @urls = Url.where(user_uuid: user_uuid)
   end
 
   # GET /urls/1 or /urls/1.json
@@ -22,7 +23,28 @@ class UrlsController < ApplicationController
     url = Url.find_by(short_url: short_url_param)
 
     if url
-      redirect_to url.target_url, allow_other_host: true
+      visit = url.visits.new(ip_address: request.remote_ip)
+
+      if visit.save
+        redirect_to url.target_url, allow_other_host: true
+      else
+        Rails.logger.error "Failed to save visit: #{visit.errors.full_messages.join(", ")}"
+        redirect_to url.target_url, allow_other_host: true
+      end
+
+    else
+      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
+    end
+  end
+
+  def show_visits
+    short_url_param = params[:short_url]
+    @url = Url.find_by(short_url: short_url_param)
+
+    if @url
+      @visits = @url.visits
+      @full_short_url = full_short_url(@url.short_url)
+      render "show_visits"
     else
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
     end
@@ -30,7 +52,8 @@ class UrlsController < ApplicationController
 
   # POST /urls or /urls.json
   def create
-    @url = Url.new(url_params)
+    user_uuid = cookies[:user_uuid] || generate_user_uuid
+    @url = Url.new(url_params.merge(user_uuid: user_uuid))
 
     respond_to do |format|
       if @url.save
@@ -66,6 +89,16 @@ class UrlsController < ApplicationController
   end
 
   private
+
+    def generate_user_uuid
+      uuid = SecureRandom.uuid
+      cookies[:user_uuid]={
+        value: uuid,
+        expires: 1.year.from_now,
+        httponly: true
+      }
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_url
       @url = Url.find(params[:id])

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   get "/:short_url", to: "urls#redirect_to_target"
+  get "/visits/:short_url", to: "urls#show_visits", as: "show_visits"
   # Defines the root path route ("/")
   root "urls#new"
 end
