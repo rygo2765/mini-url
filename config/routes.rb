@@ -9,9 +9,12 @@ Rails.application.routes.draw do
   # Render dynamic PWA files from app/views/pwa/*
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+  get "/myurls", to: "urls#my_urls", as: "my_urls"
+  get "/myurls/:short_url", to: "urls#show_visits", as: "show_visits_by_short_url"
   get "/:short_url", to: "urls#redirect_to_target"
   get "/visits/:short_url", to: "urls#show_visits", as: "show_visits"
   get "/generate/:short_url", to: "urls#show", as: "generate"
+
   # Defines the root path route ("/")
   root "urls#new"
 end
