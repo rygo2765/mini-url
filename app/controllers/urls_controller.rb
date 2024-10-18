@@ -1,5 +1,5 @@
 class UrlsController < ApplicationController
-  before_action :set_url, only: %i[ show edit update destroy ]
+  before_action :set_url, only: %i[ edit update destroy ]
 
   def index
     user_uuid = cookies[:user_uuid]
@@ -7,7 +7,14 @@ class UrlsController < ApplicationController
   end
 
   def show
-    @full_short_url = full_short_url(@url.short_url)
+    @url = Url.find_by(short_url: params[:short_url])
+
+    if @url
+      @full_short_url = full_short_url(@url.short_url)
+      render :show
+      return
+    end
+      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
   end
 
   # GET /urls/new
@@ -55,7 +62,7 @@ class UrlsController < ApplicationController
 
     respond_to do |format|
       if @url.save
-        format.html { redirect_to @url, notice: "Url was successfully created." }
+        format.html { redirect_to generate_url(@url.short_url), notice: "Url was successfully created." }
         format.json { render json: { target_url: @url.target_url, short_url: full_short_url(@url.short_url), title: @url.title }, status: :created }
       else
         format.html { render :new, status: :unprocessable_entity }
