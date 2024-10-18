@@ -1,13 +1,11 @@
 class UrlsController < ApplicationController
   before_action :set_url, only: %i[ show edit update destroy ]
 
-  # GET /urls or /urls.json
   def index
     user_uuid = cookies[:user_uuid]
     @urls = Url.where(user_uuid: user_uuid)
   end
 
-  # GET /urls/1 or /urls/1.json
   def show
     @full_short_url = full_short_url(@url.short_url)
   end

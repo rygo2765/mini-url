@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   get "/:short_url", to: "urls#redirect_to_target"
   get "/visits/:short_url", to: "urls#show_visits", as: "show_visits"
+  get "/generate/:short_url", to: "urls#show", as: "generate"
   # Defines the root path route ("/")
   root "urls#new"
 end
