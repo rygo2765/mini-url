@@ -1,11 +1,6 @@
-<div class="flex flex-col w-full mx-auto h-full items-center">
-  <div class="flex flex-row justify-end w-full">
-    <a href="/myurls" class="mt-5 btn bg-primary hover:opacity-60 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center">
-    My URLs
-    </a>
-  </div>
-  <h1 class="text-6xl text-white mt-10 mb-5">MiniURL Usage Report</h1>
-  <div class="flex flex-row h-1/2 w-4/5 justify-center space-x-7">
+<div class="flex flex-col w-full mx-auto h-3/4 items-center justify-start mt-10">
+  <h1 class="text-6xl text-white mb-5">MiniURL Usage Report</h1>
+  <div class="flex flex-row h-full w-4/5 justify-center space-x-7">
     <ul class="menu menu-horizontal bg-secondary rounded-box w-1/2 h-full max-h-full text-black overflow-y-auto overflow-x-hidden">
       <% if @url %>
         <li class="w-full rounded-lg">
@@ -98,7 +93,7 @@
               <% end %>
             <%else%>
               <tr>
-                <td colspan="4" class="text-center items-center h-60 text-2xl">URL has not been visited</td>
+                <td colspan="4" class="text-center items-center h-96 text-2xl">URL has not been visited</td>
               </tr>
             <%end%>
           </tbody>
