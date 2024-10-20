@@ -1,20 +1,51 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
+<div class="flex flex-col w-2/3 mx-auto h-full items-center justify-start mt-20">
+  <div class="h-2/3 rounded-lg px-8 pt-6 pb-8 mb-4 flex flex-row border-4 border-dashed">
+    <div class="flex flex-col w-1/2 justify-center">
+      <h1 class="text-6xl lg:text-8xl font-bold mb-10 text-center text-white">MiniURL</h1>
+      <p class="text-xl mb-6 text-center text-white mx-3">
+        Enter the URL you want to shorten and click "Shorten URL."
+      </p>
+    </div>
+    <div class="w-1/2 ml-4 flex flex-col justify-center text-white">
+      <h2 class="font-bold text-3xl mx-auto mb-6">Shortened URL Details</h2>
+      
+      <div class="flex flex-col space-y-4 w-full">
 
-    <h2 class="font-bold text-3xl">Shortened URL Details</h2>
-    <p><strong>Original URL:</strong> <%= @url.target_url %></p>
-    <p><strong>Shortened URL:</strong> <%= link_to @full_short_url, @full_short_url, target: "_blank", class: "text-blue-500 underline" %></p>
-    <p><strong>Title:</strong> <%= @url.title %></p>
+        <div class="flex flex-col mx-auto w-4/5">
+          <span class="font-bold mb-2">Title:</span>
+          <div class="bg-secondary text-background p-2 rounded border border-gray-300 text-clip whitespace-nowrap max-w-lg">
+            <%= @url.title %>
+          </div>
+        </div>
 
-    <%= link_to "View Visit Dashboard", show_visits_path(@url.short_url), class: "text-blue-500 hover:text-blue-700" %>
-    <%= link_to "Shorten another URL", new_url_path, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to "Back to URLs", urls_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+        <div class="flex flex-col mx-auto w-4/5">
+          <span class="font-bold mb-2">Original URL:</span>
+          <div class="bg-secondary text-background p-2 rounded border-gray-300 text-clip whitespace-nowrap max-w-lg">
+            <%= @url.target_url%>
+          </div>
+        </div>
 
-    <div class="inline-block ml-2">
-      <%= button_to "Destroy this URL", @url, method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+        <div class="flex flex-col  mx-auto w-4/5">
+          <span class="font-bold mb-2">Short URL:</span>
+          <div class="bg-secondary text-background p-2 rounded border-gray-300">
+            <%= @full_short_url%>
+          </div>
+        </div>
+
+        <div class="flex flex-row mx-auto w-4/5 justify-evenly">
+          <div class="tooltip" data-tip="Visit URL">
+            <a class="btn bg-primary text-black" href="<%= @full_short_url %>" target="_blank">
+               <%= image_tag("visit-icon.png", class: "h-6 w-6")%>
+            </a>
+          </div>
+          <div class="tooltip" data-tip="Copy URL" data-controller="clipboard">
+            <button id="copy-button" class="btn bg-primary text-black" data-clipboard-text="<%= @full_short_url %>" data-clipboard-target="source" data-action="click->clipboard#copy">
+              <%= image_tag("copy-icon.png", class: "h-6 w-6")%>
+            </button>
+          </div>
+          <a class="btn bg-primary text-black w-1/2" href="/">Shorten another</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

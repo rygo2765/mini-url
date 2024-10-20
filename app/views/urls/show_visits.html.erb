@@ -1,44 +1,105 @@
-<h1 class="text-2xl font-bold mb-4">Visit Dashboard for <%= @url.short_url %></h1>
+<div class="flex flex-col w-full mx-auto h-3/4 items-center justify-start mt-10">
+  <h1 class="text-6xl text-white mb-5">MiniURL Usage Report</h1>
+  <div class="flex flex-row h-full w-4/5 justify-center space-x-7">
+    <ul class="menu menu-horizontal bg-secondary rounded-box w-1/2 h-full max-h-full text-black overflow-y-auto overflow-x-hidden">
+      <% if @url %>
+        <li class="w-full rounded-lg">
+          <div class="flex flex-col items-start bg-primary">
+            <div class="text-xs whitespace-normal w-full">
+              <%= @url.title %>
+            </div>
+            <div class="text-bold text-xl">
+              <%= @full_short_url %>
+            </div>
+            <div class="text-xs whitespace-normal w-full">
+              <%= @url.target_url %>
+            </div>
 
-<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-  <h2 class="text-xl font-semibold mb-2">URL Information</h2>
-  <p><strong>Short URL:</strong> <%= link_to @full_short_url, @full_short_url, target: "_blank" %></p>
-  <p><strong>Target URL:</strong> <%= link_to @url.target_url, @url.target_url, target: "_blank" %></p>
-  <p><strong>Title:</strong> <%= @url.title %></p>
-</div>
+            <div class="flex flex-row w-full justify-between items-center">
+              <div class="flex flex-row space-x-3 w-1/2 justify-start items-center">
+                <div class="tooltip" data-tip="Visit URL">
+                  <a class="btn btn-xs bg-primary text-black" href="<%= @full_short_url %>" target="_blank">
+                    <%= image_tag("visit-icon.png", class: "h-4 w-4")%>
+                  </a>
+                </div>
+                <div class="tooltip" data-tip="Copy URL" data-controller="clipboard">
+                  <button id="copy-button" class="btn btn-xs bg-primary text-black" data-clipboard-text="<%= @full_short_url %>" data-clipboard-target="source" data-action="click->clipboard#copy">
+                    <%= image_tag("copy-icon.png", class: "h-4 w-4")%> Copy
+                  </button>
+                </div>
+              </div>
 
-<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-  <h2 class="text-xl font-semibold mb-2">Visit Statistics</h2>
-  <p><strong>Total Visits:</strong> <%= @visits.count %></p>
-  
-  <h3 class="text-lg font-semibold mt-4 mb-2">Top 5 Countries</h3>
-  <ul class="list-disc pl-5">
-    <% @visits.group(:country).order('count_id DESC').limit(5).count(:id).each do |country, count| %>
-      <li><%= "#{country}: #{count}" %></li>
-    <% end %>
-  </ul>
-</div>
-
-<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-  <h2 class="text-xl font-semibold mb-2">Recent Visits</h2>
-  <table class="min-w-full">
-    <thead>
-      <tr>
-        <th class="px-4 py-2">Date</th>
-        <th class="px-4 py-2">City</th>
-        <th class="px-4 py-2">Region</th>
-        <th class="px-4 py-2">Country</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @visits.order(created_at: :desc).limit(10).each do |visit| %>
-        <tr>
-          <td class="border px-4 py-2"><%= visit.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-          <td class="border px-4 py-2"><%= visit.city %></td>
-          <td class="border px-4 py-2"><%= visit.region %></td>
-          <td class="border px-4 py-2"><%= visit.country %></td>
-        </tr>
+              <p class="text-xs">created <%= time_ago_in_words(@url.created_at) %> ago</p>
+            </div>
+          </div>
+        </li>
       <% end %>
-    </tbody>
-  </table>
+      <% @urls.each do |url| %>
+      <% next if url == @url %>
+        <li class="w-full">
+          <a href="/myurls/<%= url.short_url %>" class="flex flex-col items-start hover:bg-slate-300">
+            <div class="text-xs whitespace-normal w-full">
+              <%= url.title %>
+            </div>
+            <div class="text-bold text-xl">
+              <%= url.full_short_url %>
+            </div>
+            <div class="text-xs whitespace-normal w-full">
+              <%= url.target_url%>
+            </div>
+
+            <p class="text-xs text-right w-full">created <%= time_ago_in_words(url.created_at) %> ago</p>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+    <div class="flex flex-col w-1/2 justify-start">
+
+      <h2 class="text-2xl text-white my-5 mx-auto"><%= @full_short_url%></h2>
+
+      <div class="flex w-full mb-5">
+        <div class="card bg-secondary text-black rounded-box grid h-20 flex-grow place-items-center w-1/2">
+          <p><strong>Total Visits:</strong> <%= @visits.present? ? @visits.count : 0 %></p>
+        </div>
+        <div class="divider divider-horizontal"></div>
+        <div class="card bg-secondary text-black rounded-box flex flex-row items-center justify-center h-20 flex-grow w-1/2">
+          <p class="mr-2"><strong>Top Country:</strong></p>
+          <p class="text-sm">
+            <% top_country = @visits.group(:country).order('count_id DESC').limit(1).count(:id).first %>
+            <%= top_country.present? ? top_country[0] : "-" %>
+          </p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto h-full border border-white rounded-lg">
+        <table class="table text-white bg-background ">
+          <thead class="sticky top-0 bg-background">
+            <tr class="text-white">
+              <th>Visit TimeStamp</th>
+              <th>City</th>
+              <th>Region</th>
+              <th>Country</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @visits.any?%>
+              <% @visits.order(created_at: :desc).limit(10).each do |visit| %>
+                <tr>
+                  <td class="px-4 py-2"><%= visit.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                  <td class="px-4 py-2"><%= visit.city %></td>
+                  <td class="px-4 py-2"><%= visit.region %></td>
+                  <td class="px-4 py-2"><%= visit.country %></td>
+                </tr>
+              <% end %>
+            <%else%>
+              <tr>
+                <td colspan="4" class="text-center items-center h-96 text-2xl">URL has not been visited</td>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+  </div>
 </div>

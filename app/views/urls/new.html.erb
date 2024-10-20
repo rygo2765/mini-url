@@ -1,14 +1,20 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New URL</h1>
-
-  <%= form_with model: @url, local: true do |form| %>
-    <div class="mb-4">
-      <%= form.label :target_url, "Enter URL to shorten" %>
-      <%= form.text_field :target_url, class: "block w-full p-2 border border-gray-300 rounded-md" %>
+<div class="flex flex-col w-2/3 mx-auto h-full items-center justify-start mt-20">
+  <div class=" flex flex-row h-2/3 rounded-lg px-8 pt-6 pb-8 mb-4 border-4 border-dashed">
+    <div class="flex flex-col w-1/2 justify-center">
+      <h1 class="text-6xl lg:text-8xl font-bold mb-10 text-center text-white">MiniURL</h1>
+      <p class="text-xl mb-6 text-center text-white mx-3">
+        Enter the URL you want to shorten and click "Shorten URL."
+      </p>
     </div>
-    
-    <%= form.submit "Shorten URL", class: "rounded-lg py-3 px-5 bg-blue-500 text-white inline-block font-medium" %>
-  <% end %>
-
-  <%= link_to "Back to URLs", urls_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= form_with model: @url, local: true, class: "w-1/2 ml-4 flex flex-col justify-center space-y-4" do |form| %>
+      <div>
+        <%= form.label :target_url, "Enter URL to shorten", class: "block text-white text-sm font-bold mb-4" %>
+        <%= form.text_field :target_url, placeholder: "https://example.com", class: "shadow appearance-none border rounded py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline w-full" %>
+      </div>
+      
+      <div>
+        <%= form.submit "Shorten URL", class: "w-full bg-primary hover:opacity-60 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-1/2" %>
+      </div>
+    <% end %>
+  </div>
 </div>
