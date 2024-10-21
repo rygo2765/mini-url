@@ -1,16 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Url, type: :model do
+  # Define common test variables
   let(:valid_url) { 'https://example.com' }
   let(:invalid_url) { 'invalid-url' }
   let(:user_uuid) { '123e4567-e89b-12d3-a456-426614174000' }
 
+  # Mock external HTTP request
   before do
     stub_request(:get, "https://example.com/")
         .to_return(status: 200, body: "<html><head><title>Example Website</title></ head><body></body></html>")
   end
 
-  # Describe validations
+  # Test URL model validations
   describe 'validations' do
     context 'with a valid target_url' do
       it 'is valid' do
@@ -42,7 +44,7 @@ RSpec.describe Url, type: :model do
   end
 
 
-  # Describe short URL generation
+  # Test short URL generation functionality
   describe '#generate_short_url' do
     let(:url) { Url.create(target_url: valid_url, user_uuid: user_uuid) }
 
@@ -68,7 +70,7 @@ RSpec.describe Url, type: :model do
     end
   end
 
-  # Describe title fetching
+  # Test webpage title fetching functionality
   describe '#fetch_title_from_target_url' do
     it 'fetches the title from the target URL' do
       url = Url.create(target_url: valid_url, user_uuid: user_uuid)
@@ -82,7 +84,7 @@ RSpec.describe Url, type: :model do
     end
   end
 
-  # Describe sanitize target_url
+  # Test URL sanitization
   describe '#sanitize_target_url' do
     it 'adds http:// to URLs without a scheme' do
       url = Url.new(target_url: 'example.com', user_uuid: user_uuid)

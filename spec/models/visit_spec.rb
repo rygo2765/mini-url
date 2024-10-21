@@ -1,13 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Visit, type: :model do
+  # Set up test data
   let(:url) { Url.create!(short_url: 'abcd1234', target_url: 'https://example.com', user_uuid: '123e4567-e89b-12d3-a456-426614174000') }
 
+  # Mock external HTTP request
   before do
     stub_request(:get, "https://example.com/")
       .to_return(status: 200, body: "<html><head><title>Example Site</title></head><body></body></html>", headers: { 'Content-Type' => 'text/html' })
   end
 
+  # Test IP address geocoding functionality
   describe 'geocode_ip_address' do
     context 'when geocoding is successful' do
       it 'sets the city, region and country based on the IP address' do

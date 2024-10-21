@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UrlsController, type: :controller do
-  # Test setup and variables
+  # Define common test variables
   let(:valid_url) { "https://example.com" }
   let(:invalid_url) { "invalid-url" }
   let(:html_content) { "<html><head><title>Example Site</title></head><body></body></html>" }
