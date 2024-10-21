@@ -3,7 +3,7 @@
 MiniURL is a URL shortener built with Ruby on Rails 7.2.1. It allows users to shorten URLs, track clicks, and view detailed usage report on a simple dashboard.
 
 ## Prerequisites
-Ensure you ahve the following installed before starting: 
+Ensure you have the following installed before starting: 
 1. Docker
 2. Visual Studio Code (VSCode)
 3. Dev Containers Extension for VSCode
