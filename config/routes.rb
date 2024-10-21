@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   # Error page
   get "/error_no_urls", to: "urls#error_no_urls", as: "error_no_urls"
+  get "/error_no_access", to: "urls#error_no_access", as: "error_no_access"
 
   # Custom Routes
   get "/myurls", to: "urls#my_urls", as: "my_urls"

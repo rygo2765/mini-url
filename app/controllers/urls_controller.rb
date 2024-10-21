@@ -1,6 +1,6 @@
 class UrlsController < ApplicationController
   before_action :set_url, only: %i[ edit update destroy ]
-  before_action :set_url_by_short_url, only: [ :show_visits ]
+  # before_action :set_url_by_short_url, only: [ :show_visits ]
 
   def index
     user_uuid = cookies[:user_uuid]
@@ -64,7 +64,7 @@ class UrlsController < ApplicationController
     short_url_param = params[:short_url]
     @url = Url.find_by(short_url: short_url_param)
 
-    if @url
+    if @url && @url.user_uuid == cookies[:user_uuid]
       @urls = Url.where(user_uuid: cookies[:user_uuid]).order(created_at: :desc)
       @visits = @url.visits
       @full_short_url = full_short_url(@url.short_url)
@@ -77,7 +77,7 @@ class UrlsController < ApplicationController
       end
       render "show_visits"
     else
-      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
+      redirect_to error_no_access_path
     end
   end
 
@@ -143,11 +143,5 @@ class UrlsController < ApplicationController
     def full_short_url(path)
       base = ENV["SHORT_URL_BASE"] || request.base_url
       "#{base}/#{path}"
-    end
-
-    def set_url_by_short_url
-      @url = Url.find_by!(short_url: params[:short_url])
-    rescue ActiveRecord::RecordNotFound
-      redirect_to root_path, alert: "URL not found"
     end
 end
