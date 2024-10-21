@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Visit, type: :model do
-  let(:url) { Url.create!(short_url: 'abcd1234', target_url: 'https://example.com') }
+  let(:url) { Url.create!(short_url: 'abcd1234', target_url: 'https://example.com', user_uuid: '123e4567-e89b-12d3-a456-426614174000') }
 
   before do
     stub_request(:get, "https://example.com/")
