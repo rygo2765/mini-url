@@ -3,9 +3,12 @@ class Visit < ApplicationRecord
 
   attr_accessor :ip_address
 
+  # Callbacks
   before_create :geocode_ip_address
 
   private
+
+  # GEocodes the IP address to obtain location data before saving the visit
   def geocode_ip_address
     return unless ip_address.present?
     begin
