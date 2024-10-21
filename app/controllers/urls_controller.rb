@@ -1,6 +1,6 @@
 class UrlsController < ApplicationController
   before_action :set_url, only: %i[ edit update destroy ]
-  before_action :set_url_by_short_url, only: [ :show_visits ]
+  # before_action :set_url_by_short_url, only: [ :show_visits ]
 
   def index
     user_uuid = cookies[:user_uuid]
@@ -33,12 +33,10 @@ class UrlsController < ApplicationController
       if @urls.present?
         redirect_to show_visits_by_short_url_path(@urls.first.short_url)
       else
-        flash[:notice] = "No URLs found. Create your first short URL!"
-        redirect_to root_path
+        redirect_to error_no_urls_path
       end
     else
-      flash[:alert] = "You need to create a URL first!"
-      redirect_to root_path
+      redirect_to error_no_urls_path
     end
   end
 
@@ -66,7 +64,7 @@ class UrlsController < ApplicationController
     short_url_param = params[:short_url]
     @url = Url.find_by(short_url: short_url_param)
 
-    if @url
+    if @url && @url.user_uuid == cookies[:user_uuid]
       @urls = Url.where(user_uuid: cookies[:user_uuid]).order(created_at: :desc)
       @visits = @url.visits
       @full_short_url = full_short_url(@url.short_url)
@@ -79,7 +77,7 @@ class UrlsController < ApplicationController
       end
       render "show_visits"
     else
-      render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
+      redirect_to error_no_access_path
     end
   end
 
@@ -87,12 +85,12 @@ class UrlsController < ApplicationController
   def create
     user_uuid = cookies[:user_uuid] || generate_user_uuid
     @url = Url.new(url_params.merge(user_uuid: user_uuid))
-
     respond_to do |format|
       if @url.save
         format.html { redirect_to generate_url(@url.short_url), notice: "Url was successfully created." }
         format.json { render json: { target_url: @url.target_url, short_url: full_short_url(@url.short_url), title: @url.title }, status: :created }
       else
+        flash.now[:alert] = "Failed to shorten the URL. Please check the URL and try again."
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @url.errors, status: :unprocessable_entity }
       end
@@ -145,11 +143,5 @@ class UrlsController < ApplicationController
     def full_short_url(path)
       base = ENV["SHORT_URL_BASE"] || request.base_url
       "#{base}/#{path}"
-    end
-
-    def set_url_by_short_url
-      @url = Url.find_by!(short_url: params[:short_url])
-    rescue ActiveRecord::RecordNotFound
-      redirect_to root_path, alert: "URL not found"
     end
 end

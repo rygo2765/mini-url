@@ -10,6 +10,11 @@
       <div>
         <%= form.label :target_url, "Enter URL to shorten", class: "block text-white text-sm font-bold mb-4" %>
         <%= form.text_field :target_url, placeholder: "https://example.com", class: "shadow appearance-none border rounded py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline w-full" %>
+        <% if flash[:alert] %>
+          <span class="text-xs text-red-600">
+            <%= flash[:alert] %>
+          </span>
+        <% end %>
       </div>
       
       <div>
@@ -18,3 +23,4 @@
     <% end %>
   </div>
 </div>
+
