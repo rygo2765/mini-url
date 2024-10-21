@@ -87,12 +87,12 @@ class UrlsController < ApplicationController
   def create
     user_uuid = cookies[:user_uuid] || generate_user_uuid
     @url = Url.new(url_params.merge(user_uuid: user_uuid))
-
     respond_to do |format|
       if @url.save
         format.html { redirect_to generate_url(@url.short_url), notice: "Url was successfully created." }
         format.json { render json: { target_url: @url.target_url, short_url: full_short_url(@url.short_url), title: @url.title }, status: :created }
       else
+        flash.now[:alert] = "Failed to shorten the URL. Please check the URL and try again."
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @url.errors, status: :unprocessable_entity }
       end
