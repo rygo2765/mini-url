@@ -33,12 +33,10 @@ class UrlsController < ApplicationController
       if @urls.present?
         redirect_to show_visits_by_short_url_path(@urls.first.short_url)
       else
-        flash[:notice] = "No URLs found. Create your first short URL!"
-        redirect_to root_path
+        redirect_to error_no_urls_path
       end
     else
-      flash[:alert] = "You need to create a URL first!"
-      redirect_to root_path
+      redirect_to error_no_urls_path
     end
   end
 
