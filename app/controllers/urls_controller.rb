@@ -1,12 +1,13 @@
 class UrlsController < ApplicationController
   before_action :set_url, only: %i[ edit update destroy ]
-  # before_action :set_url_by_short_url, only: [ :show_visits ]
 
+  # Lists all URLs belonging to the current user
   def index
     user_uuid = cookies[:user_uuid]
     @urls = Url.where(user_uuid: user_uuid)
   end
 
+  # Displays the details of a shorten URL
   def show
     @url = Url.find_by(short_url: params[:short_url])
 
@@ -18,12 +19,12 @@ class UrlsController < ApplicationController
       render file: "#{Rails.root}/public/404.html", layout: false, status: :not_found
   end
 
-  # GET /urls/new
+  # Initializes a new URL object for creation
   def new
     @url = Url.new
   end
 
-  # Action for /myurls
+  # Shows the user's URL and redirects to the visits page of the most recent URL
   def my_urls
     user_uuid = cookies[:user_uuid]
 
@@ -40,7 +41,7 @@ class UrlsController < ApplicationController
     end
   end
 
-  # GET /:short_url
+  # Redirects to the target URL when accessed via the short URL
   def redirect_to_target
     short_url_param = params[:short_url]
     url = Url.find_by(short_url: short_url_param)
@@ -60,6 +61,7 @@ class UrlsController < ApplicationController
     end
   end
 
+  # Displays visit details for a specific URL
   def show_visits
     short_url_param = params[:short_url]
     @url = Url.find_by(short_url: short_url_param)
@@ -81,7 +83,7 @@ class UrlsController < ApplicationController
     end
   end
 
-  # POST /urls or /urls.json
+  # Creates a new short URL and saves it to the database
   def create
     user_uuid = cookies[:user_uuid] || generate_user_uuid
     @url = Url.new(url_params.merge(user_uuid: user_uuid))
@@ -97,7 +99,7 @@ class UrlsController < ApplicationController
     end
   end
 
-   # PATCH/PUT /urls/1 or /urls/1.json
+   # Updates an existing URL record
    def update
     respond_to do |format|
       if @url.update(url_params)
@@ -110,7 +112,7 @@ class UrlsController < ApplicationController
     end
    end
 
-  # DELETE /urls/1 or /urls/1.json
+  # Deletes a URL record from the database
   def destroy
     @url.destroy
     respond_to do |format|
@@ -121,27 +123,29 @@ class UrlsController < ApplicationController
 
   private
 
-    def generate_user_uuid
-      uuid = SecureRandom.uuid
-      cookies[:user_uuid]={
-        value: uuid,
-        expires: 1.year.from_now,
-        httponly: true
-      }
-    end
+  # Generates a UUID for the user and stores it in a cookie
+  def generate_user_uuid
+    uuid = SecureRandom.uuid
+    cookies[:user_uuid]={
+      value: uuid,
+      expires: 1.year.from_now,
+      httponly: true
+    }
+  end
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_url
-      @url = Url.find(params[:id])
-    end
+  # Finds the URL record based on the provided ID
+  def set_url
+    @url = Url.find(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def url_params
-      params.require(:url).permit(:target_url, :short_url, :title)
-    end
+  # Only allow a list of trusted parameters through.
+  def url_params
+    params.require(:url).permit(:target_url, :short_url, :title)
+  end
 
-    def full_short_url(path)
-      base = ENV["SHORT_URL_BASE"] || request.base_url
-      "#{base}/#{path}"
-    end
+  # Generates the full short URL with base path
+  def full_short_url(path)
+    base = ENV["SHORT_URL_BASE"] || request.base_url
+    "#{base}/#{path}"
+  end
 end
