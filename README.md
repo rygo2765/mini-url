@@ -25,7 +25,13 @@ bin/dev
 ```
 
 ## Dependencies
-Since the project uses a development container, dependencies such as Ruby, Rails, PostgreSQL, TailwindCSS, RSpec are automatically installed inside the container. 
+Since the project uses a development container, dependencies such as the following are automatically installed inside the container:
+
+* Ruby 3.3.5
+* Rails 7.2.1
+* PostgreSQL
+* TailwindCSS
+* RSpec 
 
 ## Testing
 To run the both unit and integration test, use the following command in the terminal: 
