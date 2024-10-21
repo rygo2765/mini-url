@@ -1,12 +1,12 @@
-<div class="flex flex-col w-2/3 mx-auto h-full items-center justify-start mt-20">
-  <div class=" flex flex-row h-2/3 rounded-lg px-8 pt-6 pb-8 mb-4 border-4 border-dashed">
-    <div class="flex flex-col w-1/2 justify-center">
+<div class="flex flex-col xl:w-3/4 w-full mx-auto h-full items-center justify-start mt-20">
+  <div class=" flex lg:flex-row flex-col h-2/3 rounded-lg px-8 pt-6 pb-8 mb-4 border-4 border-dashed justify-center">
+    <div class="flex flex-col lg:w-1/2 w-full justify-center">
       <h1 class="text-6xl lg:text-8xl font-bold mb-10 text-center text-white">MiniURL</h1>
       <p class="text-xl mb-6 text-center text-white mx-3">
         Enter the URL you want to shorten and click "Shorten URL."
       </p>
     </div>
-    <%= form_with model: @url, local: true, class: "w-1/2 ml-4 flex flex-col justify-center space-y-4" do |form| %>
+    <%= form_with model: @url, local: true, class: "lg:w-1/2 w-full lg:ml-4 flex flex-col justify-center space-y-4" do |form| %>
       <div>
         <%= form.label :target_url, "Enter URL to shorten", class: "block text-white text-sm font-bold mb-4" %>
         <%= form.text_field :target_url, placeholder: "https://example.com", class: "shadow appearance-none border rounded py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline w-full" %>
