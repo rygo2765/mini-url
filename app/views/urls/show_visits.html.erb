@@ -1,14 +1,14 @@
-<div class="flex flex-col w-full mx-auto h-3/4 items-center justify-start mt-10">
-  <h1 class="text-6xl text-white mb-5">MiniURL Usage Report</h1>
-  <div class="flex flex-row h-full w-4/5 justify-center space-x-7">
-    <ul class="menu menu-horizontal bg-secondary rounded-box w-1/2 h-full max-h-full text-black overflow-y-auto overflow-x-hidden">
+<div class="flex flex-col w-full mx-auto h-3/4 items-center justify-start mt-5 lg:mt-10">
+  <h1 class="text-4xl lg:text-6xl text-white text-center mb-2 lg:mb-5">MiniURL Usage Report</h1>
+  <div class="flex lg:flex-row flex-col h-full w-full lg:w-4/5 justify-center lg:space-x-7">
+    <ul class="menu menu-horizontal lg:order-first order-last bg-secondary rounded-box lg:w-1/2 w-full h-full max-h-full text-black overflow-y-auto overflow-x-hidden">
       <% if @url %>
         <li class="w-full rounded-lg">
           <div class="flex flex-col items-start bg-primary">
             <div class="text-xs whitespace-normal w-full">
               <%= @url.title %>
             </div>
-            <div class="text-bold text-xl">
+            <div class="text-bold text-lg lg:text-xl">
               <%= @full_short_url %>
             </div>
             <div class="text-xs whitespace-normal w-full">
@@ -53,25 +53,25 @@
         </li>
       <% end %>
     </ul>
-    <div class="flex flex-col w-1/2 justify-start">
+    <div class="flex flex-col w-full lg:w-1/2 h-1/2 lg:h-full justify-start lg:order-last order-first">
 
-      <h2 class="text-2xl text-white my-5 mx-auto"><%= @full_short_url%></h2>
+      <h2 class="text-lg xl:text-2xl text-white my-2 lg:my-5 mx-auto"><%= @full_short_url%></h2>
 
-      <div class="flex w-full mb-5">
-        <div class="card bg-secondary text-black rounded-box grid h-20 flex-grow place-items-center w-1/2">
+      <div class="flex w-full mb-2 lg:mb-5">
+        <div class="card bg-secondary text-black text-xs lg:text-base rounded-box grid h-10 lg:h-20 flex-grow place-items-center w-1/2">
           <p><strong>Total Visits:</strong> <%= @visits.present? ? @visits.count : 0 %></p>
         </div>
         <div class="divider divider-horizontal"></div>
-        <div class="card bg-secondary text-black rounded-box flex flex-row items-center justify-center h-20 flex-grow w-1/2">
+        <div class="card bg-secondary text-black text-xs lg:text-base rounded-box flex flex-row items-center justify-center h-10 lg:h-20 flex-grow w-1/2">
           <p class="mr-2"><strong>Top Country:</strong></p>
-          <p class="text-sm">
+          <p>
             <% top_country = @visits.group(:country).order('count_id DESC').limit(1).count(:id).first %>
             <%= top_country.present? ? top_country[0] : "-" %>
           </p>
         </div>
       </div>
 
-      <div class="overflow-x-auto h-full border border-white rounded-lg">
+      <div class="overflow-x-auto h-full border border-white rounded-lg mb-2 lg:mb-0">
         <table class="table text-white bg-background ">
           <thead class="sticky top-0 bg-background">
             <tr class="text-white">
@@ -85,15 +85,15 @@
             <% if @visits.any?%>
               <% @visits.order(created_at: :desc).limit(10).each do |visit| %>
                 <tr>
-                  <td class="px-4 py-2"><%= visit.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-                  <td class="px-4 py-2"><%= visit.city %></td>
-                  <td class="px-4 py-2"><%= visit.region %></td>
-                  <td class="px-4 py-2"><%= visit.country %></td>
+                  <td class="px-2 lg:px-4 py-2"><%= visit.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                  <td class="px-2 lg:px-4 py-2"><%= visit.city %></td>
+                  <td class="px-2 lg:px-4 py-2"><%= visit.region %></td>
+                  <td class="px-2 lg:px-4 py-2"><%= visit.country %></td>
                 </tr>
               <% end %>
             <%else%>
               <tr>
-                <td colspan="4" class="text-center items-center h-96 text-2xl">URL has not been visited</td>
+                <td colspan="4" class="text-center items-center lg:h-96 text-xl lg:text-2xl">URL has not been visited</td>
               </tr>
             <%end%>
           </tbody>
