@@ -35,3 +35,5 @@ bundle exec rspec
 
 ## Deployed Application 
 The live application can be accessed at: [MiniURL - Deployed Application URL](https://miniurl-z5se.onrender.com/)
+
+Note: The deployed site may take a few moments to load initially, as the hosting service "sleeps" when inactive to save resources.
